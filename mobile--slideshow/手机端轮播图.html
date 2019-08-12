@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        .box {
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        ul {
+            /* 把li变成8张之后，需要，把ul的宽度变宽 */
+            width: 800%;
+            /* transition: all 1s; */
+        }
+        
+        li {
+            float: left;
+            width: 12.5%;
+        }
+        
+        img {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <header></header>
+    <!-- 结构 -->
+    <!-- li*6>a[href=#]>img[src=./images/$.jpg] -->
+    <div class="box">
+        <ul>
+            <!-- 为了无缝连接，我们在图片这里前后增加了2个图片 -->
+            <li>
+                <a href="#"><img src="./images/6.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/1.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/2.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/3.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/4.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/5.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/6.jpg" alt=""></a>
+            </li>
+            <li>
+                <a href="#"><img src="./images/1.jpg" alt=""></a>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="../mine/js/zepto.js"></script>
+<script src="../mine/js/touch.js"></script>
+<script>
+    //获取DOM
+    var box = $(".box");
+    var img = $("ul img");
+    var ul = $("ul");
+    var imgWidth = img.width();
+
+    var index = 1;
+    var right = index * imgWidth;
+    ul.css("transform", `translateX(-${right}px)`);
+    setTimeout(function() {
+        ul.css("transition", "all 500ms");
+    }, 100);
+
+    //往左滑，坐标在增大
+    box.on("swipeLeft", function() {
+        index++;
+        // if (index == img.length) {
+        //     index = 0;
+        // }
+        var left = index * imgWidth;
+        ul.css("transform", `translateX(-${left}px)`);
+    });
+    //往左滑，坐标在增大
+    box.on("swipeRight", function() {
+        index--;
+        // if (index == -1) {
+        //     index = img.length - 1;
+        // }
+        var right = index * imgWidth;
+        ul.css("transform", `translateX(-${right}px)`);
+    });
+
+    //过渡结束之后时进行
+    ul.on("transitionend", function() {
+        //1.判读 index
+        //往左面滑(滑倒倒数第一张的时候，其实显示的已经是用户想看的第一张)
+        if (index == img.length - 1) {
+
+            index = 1;
+            //index修改完毕之后需要重新执行一遍
+            var right = index * imgWidth;
+            ul.css("transform", `translateX(-${right}px)`);
+
+            //2.取消过渡效果
+            ul.css("transition", "none");
+            //3.已经判断完毕了，重新打开过渡效果
+            //这里设置一个1毫秒的延迟，否则会一起进行
+            setTimeout(function() {
+                ul.css("transition", "all 500ms");
+            }, 1);
+        }
+
+        //1.判读 index
+        //往右面滑(滑倒index为0的时候，显示的是客户想看的第6张图)
+        if (index == 0) {
+            //2.取消过渡效果
+            ul.css("transition", "none");
+            index = img.length - 2;
+            //index修改完毕之后需要重新执行一遍
+            var left = index * imgWidth;
+            ul.css("transform", `translateX(-${left}px)`);
+            //延迟开启过渡效果
+            setTimeout(function() {
+                ul.css("transition", "all 500ms");
+            }, 1)
+        }
+
+
+    })
+</script>
+
+</html>
